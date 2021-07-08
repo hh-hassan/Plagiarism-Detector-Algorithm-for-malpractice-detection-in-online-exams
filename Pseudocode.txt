@@ -1,0 +1,202 @@
+declare a structure to store result of each set of files to be compared i.e which and which file is compared and what is the percentage plagiarism
+
+main(argc, argv)
+{
+    total_files = atoi(argv[1]);
+
+	number_comparisons = (total_files * (total_files - 1)) / 2;
+
+	declare a pointer to a pointer to a char named file_name 
+    
+    check if there is inappropriate number of commandline arguments or if number of file names entered is not equal to number of files entered
+    
+    create an dynamic array of strings named file_name
+    
+    for (i = 0 to i < total_files)
+	{
+		store the name of files in the array file_name, considering the max length of file name to be 100
+
+		modify_file_1(file_name[i]) and modify_file_2(file_name[i]) i.e modify each and every file two times
+	}
+    
+    create an dynamic array of structures named array_str to store the results of nC2 comparisons
+
+    initialize count as 0
+
+	for (i = 0 to i < total_files) // initialize the structure
+	{
+		for (j = i + 1 to j < total_files)
+		{
+			array_str[count].x = i + 1
+			array_str[count].y = j + 1
+			array_str[count].percentage_plagiarism = calc_plagiarism(file_name[i], file_name[j])
+
+			count++
+		}
+	}
+
+	selectionSort(array_str, number_comparisons) i.e sort the percentage plagairism between different files
+	
+	initialize sum as 0
+    
+    for (i = number_comparisons - 1 to i >= 0) // display the table of results
+	{
+		sum += array_str[i].percentage_plagiarism
+
+		print(which file is compared with which file and the percentage plagiarism between the two files)
+	}
+
+	print(Average plagiarism i.e sum / number_comparisons)
+
+	free the pointers declared i.e release the used space
+}
+
+modify_file_1(file_name)
+{
+	create a temporary file "temp.c"
+
+    open the file_name and temporary file in read and write mode respectively    
+
+	initialize count as 0
+    
+    while (extract lines of file_name one by one till it not end) // considering max length of the line as 1000
+	{
+		for (i = 0 to i < strlen(line) )
+		{
+			if line[i] = '#', then break the loop i.e remove Header Files and #define directive
+
+			if /* type comment has started, then 
+            {
+                count = 1
+                i += 2
+            }
+
+			check and print if there is '\n' in between /* */ type comment
+
+			if */ type comment has ended
+            {
+				count = 0;
+				i += 2;
+			}
+
+			if (count = 0), then remove spaces, '\t', and print other characters outside comments in temporary file
+
+			if // type comment has started
+			{
+				j = i + 2;
+
+				while (j < strlen(line))
+				{
+					check and print if there is '\n' is in between // type comment
+
+					j++;
+				}
+
+				break;
+			}
+		}
+	}
+
+	close the file_name and temporary file
+
+	remove original file
+
+	rename modified file with the name of original file
+}
+
+modify_file_2(file_name)
+{
+	int count = 0;
+
+	create a temporary file "temp.c"
+
+    open the file_name and temporary file in read and write mode respectively
+
+	while (extract lines of file_name one by one till it not end) // considering max length of the line as 1000
+	{
+		for (i = 0 to i < strlen(line) )
+		{
+			if line[i] = '\n', then continue the loop
+
+			print line[i] in temporary file
+
+			if line[i] = ';', then print '\n' in temporary file
+		}
+	}
+
+	close the file_name and temporary file
+
+	remove original file
+
+	rename modified file with the name of original file
+}
+
+calc_plagiarism(file_1, file_2)
+{
+	intitalizing both number of plagiarised characters and total characters as 0
+
+    open both file_1 and file_2 in read mode
+
+    initialize flag as 0
+
+	while (extract lines of file_1 one by one till it not end) // considering max length of the line as 1000
+	{
+		while (extract lines of file_2 one by one till it not end) // considering max length of the line as 1000
+		{
+			i = 0;
+
+			flag=1;
+
+			while (if any of the lines has not ended with ';')
+			{
+				if (line_1[i] = line_2[i]), then plag_char++;
+
+				i++;
+			}
+
+			check if line_2 hasn't ended and if, then add the number of characters left in that line
+
+			check if line_1 hasn't ended and if, then add the number of characters left in that line
+			
+			total_char += i;
+
+			break;
+		}
+
+		check if file_1 has more number of lines than file_2 and add the number of characters of those left lines
+
+		flag=0
+	}
+
+	checking if file_2 has more number of lines than file_1 and add the number of characters of those left lines
+	
+	plag_percent = (plag_char / total_char) * 100
+
+	close the file_1 and file_2
+
+	return (plag_percent)
+}
+
+selectionSort(array_str, n)
+{
+	for (i = 0 to i < n - 1) // one by one move boundary of unsorted subarray
+	{
+		min_idx = i // find the minimum element in unsorted array
+
+		for (j = i + 1 to j < n)
+
+			if ((array_str[j].percentage_plagiarism) < (array_str[min_idx].percentage_plagiarism)), then min_idx = j
+
+		swap the found minimum element with the first element
+
+		swap the x value of found minimum element with the x value of first element
+		swap the y value of found minimum element with the y value of first element
+	}
+}
+
+swap(xp, yp)
+{
+	temp = *xp
+	*xp = *yp
+	*yp = temp
+}
